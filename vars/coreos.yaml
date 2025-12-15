@@ -3,4 +3,4 @@ dest_ign: rhcos-config.ign
 dir_iso: /var/www/html/nginx/public
 src_iso: rhcos-live.x86_64.iso
 dest_iso: rhcos-customize.iso
-src_butane_quadlet_sample: /tmp/rhcos-config-manual-quadlet-sample.bu
+src_butane_quadlet_sample: /tmp/iso.bu
