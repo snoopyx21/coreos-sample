@@ -45,12 +45,7 @@
       shell: 'butane --pretty --strict -d ./files {{ src_butane_tomcat }} > {{ dir_iso }}/{{ dest_ign }}'    
 
     - name: Run coreos-installer from the container image
-      shell: 'coreos-installer iso customize --live-ignition /data/{{ dest_ign }} -o /data/{{ dest_iso }} {{ src_iso }}'
-
-    - name: Create directory for ISO output
-      file:
-        path: "{{ dir_iso }}/{{ dest_iso }}"
-        mode: '0744'
+      shell: 'coreos-installer iso customize --live-ignition {{ dir_iso }}/{{ dest_ign }} -o {{ dir_iso }}/{{ dest_iso }} {{ src_iso }}'
 
     - name: Show resulting ISO path
       debug:
