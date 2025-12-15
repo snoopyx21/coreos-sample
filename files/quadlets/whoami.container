@@ -1,0 +1,16 @@
+[Unit]
+Description=whoami container via Quadlet
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+AutoUpdate=registry
+Image=traefik/whoami:latest
+Exec=sleep 1000
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target
