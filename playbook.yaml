@@ -1,0 +1,57 @@
+---
+
+- name: Create ISO CoreOS
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars/coreos.yaml
+
+  tasks:
+    - name: Check if the coreos-installer image is present
+      stat:
+        path: "{{ bin_butane }}"
+      register: butane_check
+
+    - name: Fail if butane is missing
+      fail:
+        msg: "Butane non installé !"
+      when: butane_check.stat.exists is false
+
+    - name: Fail if butane is present
+      debug:
+        msg: "Butane installé !"
+      when: butane_check.stat.exists 
+
+    - name: Check if the coreos-installer image is present
+      shell: rpm -qa | grep -q coreos
+      register: coreos_image_check
+
+    - name: Fail if the coreos-installer image is missing
+      fail:
+        msg: "L'image coreos n'est pas présente localement !"
+      when: coreos_image_check.rc != 0
+
+    - name: Debug if the coreos-installer image is present
+      debug:
+        msg: "L'image coreos est présente localement !"
+      when: coreos_image_check.rc == 0
+
+    - name: Clean old ISO 
+      file:
+        path: "{{ dir_iso }}/{{ dest_iso }}"
+        state: absent
+
+    - name: Generate Ignition file
+      shell: 'butane --pretty --strict -d ./files {{ src_butane_tomcat }} > {{ dir_iso }}/{{ dest_ign }}'    
+
+    - name: Run coreos-installer from the container image
+      shell: 'coreos-installer iso customize --live-ignition /data/{{ dest_ign }} -o /data/{{ dest_iso }} {{ src_iso }}'
+
+    - name: Create directory for ISO output
+      file:
+        path: "{{ dir_iso }}/{{ dest_iso }}"
+        mode: '0744'
+
+    - name: Show resulting ISO path
+      debug:
+        msg: "ISO créée : {{ dir_iso }}/{{ dest_iso }}"
