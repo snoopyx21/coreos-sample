@@ -1,0 +1,5 @@
+my_cfg:
+ instances:
+  device: ens33
+  mask: 255.255.255.0
+  domain: ganymede.blog
